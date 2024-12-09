@@ -1,0 +1,92 @@
+# version: '3.8'
+
+# services:
+#   book-service:
+#     build:
+#       context: ./book_service
+#       dockerfile: app/Dockerfile
+#     ports:
+#       - "8000:8000"
+#     volumes:
+#       - ./book_service/app:/app
+#     environment:
+#       - DATABASE_URL=sqlite+aiosqlite:////app/test.db
+#     networks:
+#       - library-network
+
+#   user-service:
+#     build:
+#       context: ./user_service
+#       dockerfile: app/Dockerfile
+#     ports:
+#       - "8001:8001"
+#     volumes:
+#       - ./user_service/app:/app
+#     environment:
+#       - SECRET_KEY=secret
+#       - DATABASE_URL=sqlite+aiosqlite:////app/test.db
+#       - BOOK_SERVICE_URL=http://book-service:8000
+#     networks:
+#       - library-network
+#     depends_on:
+#       - book-service
+
+# networks:
+#   library-network:
+#     driver: bridge
+
+version: '3.8'
+
+services:
+  book_service:
+    build: 
+      context: ./book_service
+      dockerfile: app/Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=sqlite+aiosqlite:////app/test.db
+    volumes:
+      - ./book_service/app:/app
+    networks:
+      - library_network
+
+  user_service:
+    build:
+      context: ./user_service
+      dockerfile: app/Dockerfile
+    ports:
+      - "8001:8001"
+    environment:
+      - DATABASE_URL=sqlite+aiosqlite:///./test.db
+      - BOOK_SERVICE_URL=http://book_service:8000
+      - SECRET_KEY=your_secret_key_here
+    volumes:
+      - ./user_service/app:/app
+    networks:
+      - library_network
+    depends_on:
+      - book_service
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "8501:8501"
+    environment:
+      - BOOK_SERVICE_URL=http://book_service:8000
+      - USER_SERVICE_URL=http://user_service:8001
+    networks:
+      - library_network
+    depends_on:
+      - book_service
+      - user_service
+
+networks:
+  library_network:
+    driver: bridge
+
+volumes:
+  book_data:
+  user_data:

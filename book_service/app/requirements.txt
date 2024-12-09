@@ -1,0 +1,7 @@
+fastapi==0.95.1
+sqlalchemy==2.0.10
+aiosqlite==0.19.0
+uuid==1.30
+uvicorn==0.22.0
+PyJWT==2.8.0
+pydantic[email]

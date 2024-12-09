@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+sqlalchemy
+aiosqlite
+pydantic[email]
+python-multipart
+python-jose[cryptography]
+passlib[bcrypt]
+aiohttp
+python-jwt
+PyJWT
